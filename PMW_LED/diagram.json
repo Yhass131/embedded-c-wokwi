@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "author": "Yunus Hassen",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": -19.2, "left": -71.96, "attrs": {} },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "pot1",
+      "top": 29.8,
+      "left": -164.5,
+      "rotate": 270,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led1",
+      "top": 8.4,
+      "left": 54.6,
+      "rotate": 90,
+      "attrs": { "color": "red" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r1",
+      "top": 62.4,
+      "left": 28.25,
+      "rotate": 90,
+      "attrs": { "value": "1000" }
+    }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "pot1:GND", "esp:GND.1", "black", [ "h19.2", "v57.6" ] ],
+    [ "esp:34", "pot1:SIG", "green", [ "h-9.45", "v18.8" ] ],
+    [ "pot1:VCC", "esp:3V3", "red", [ "h9.6", "v-47.2" ] ],
+    [ "esp:GND.2", "led1:C", "black", [ "v0", "h28.8" ] ],
+    [ "led1:A", "r1:1", "green", [ "h0" ] ],
+    [ "esp:5", "r1:2", "green", [ "h0" ] ]
+  ],
+  "dependencies": {}
+}
