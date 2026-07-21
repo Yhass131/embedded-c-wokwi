@@ -22,8 +22,6 @@ A collection of self-contained ESP32 demos built while learning embedded C, Plat
 
 More demos will be added as I go (I2C sensors, interrupts, timers, BLE, etc.).
 
-> **Note:** `7seg4dig`'s source file is currently `src/main.cc`. PlatformIO's default build filter only picks up `.c`, `.cpp`, and `.ino` files in `src/`, so this file won't be compiled until it's renamed to `main.cpp`.
-
 ## Running a project
 
 Each folder is a standalone PlatformIO project. From inside any project folder:
