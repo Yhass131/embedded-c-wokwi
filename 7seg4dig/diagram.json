@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "author": "Uri Shaked",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 28.8, "left": 24.04, "attrs": {} },
+    {
+      "type": "wokwi-7segment",
+      "id": "sevseg2",
+      "top": 92.22,
+      "left": -402.08,
+      "attrs": { "digits": "4" }
+    }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "esp:32", "sevseg2:C", "green", [ "h-57.45", "v96", "h-278.4" ] ],
+    [ "sevseg2:D", "esp:33", "green", [ "v56.76", "h307.2", "v-96" ] ],
+    [ "sevseg2:E", "esp:25", "green", [ "v66.36", "h326.41", "v-96" ] ],
+    [ "sevseg2:F", "esp:26", "green", [ "v-48", "h316.8", "v96" ] ],
+    [ "sevseg2:G", "esp:27", "green", [ "v37.56", "h297.6", "v-48" ] ],
+    [ "sevseg2:DIG1", "esp:21", "green", [ "v-115.2", "h499.21", "v19.2" ] ],
+    [ "sevseg2:DIG2", "esp:19", "green", [ "v-105.6", "h480", "v134.4" ] ],
+    [ "sevseg2:DIG3", "esp:18", "green", [ "v-96", "h480", "v134.4" ] ],
+    [ "esp:17", "sevseg2:DIG4", "green", [ "h19.2", "v105.6", "h-432", "v-9.6" ] ],
+    [ "sevseg2:A", "esp:14", "green", [ "v-67.2", "h345.6", "v9.6" ] ],
+    [ "esp:13", "sevseg2:B", "green", [ "h-19.05", "v-153.6", "h-297.6" ] ]
+  ],
+  "dependencies": {}
+}
