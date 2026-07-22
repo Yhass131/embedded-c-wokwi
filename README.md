@@ -19,8 +19,13 @@ A collection of self-contained ESP32 demos built while learning embedded C, Plat
 | 4 | [`PMW_LED`](./PMW_LED) | PWM output — mapping analog input to LED brightness with `analogWrite` | Potentiometer `34`, LED `5` | — |
 | 5 | [`TFTdisplay`](./TFTdisplay) | SPI communication — driving an ILI9341 TFT display with `Adafruit_GFX` | CS `5`, DC `2`, RST `4` | `Adafruit ILI9341`, `Adafruit GFX Library` |
 | 6 | [`7seg4dig`](./7seg4dig) | Multiplexed display + FreeRTOS — driving a 4-digit 7-segment display from a pinned task, value set over Serial | Digits `21,19,18,17`, Segments `14,13,32,33,25,26,27,28` | `SevSeg` |
+| 7 | [`I2CInput`](./I2CInput) | I2C communication — reading temperature, pressure, and altitude from a BMP085 sensor | BMP SDA `21`, SCL `22` | `Adafruit BMP085 Library` |
+| 8 | [`I2Cdisplay`](./I2Cdisplay) | I2C communication — driving a 16x2 character LCD with `LiquidCrystal_I2C`, right-aligned text formatting | LCD SDA `21`, SCL `22` | `LiquidCrystal_I2C` |
+| 9 | [`TwoTaskComm`](./TwoTaskComm) | FreeRTOS multitasking — two pinned tasks sharing sensor data through a queue (ultrasonic + PIR -> I2C LCD) | Ultrasonic TRIG `26`/ECHO `25`, PIR `32`, LCD SDA `21`/SCL `22` | `LiquidCrystal_I2C` |
+| 10 | [`HardwareInturrupt`](./HardwareInturrupt) | Hardware interrupts — ISR on a PIR motion sensor's rising edge, combined with polled ultrasonic distance readings on an I2C LCD | Ultrasonic TRIG `26`/ECHO `25`, PIR `32` (interrupt pin), LCD SDA `21`/SCL `22` | `LiquidCrystal_I2C` |
+| 11 | [`WIFI`](./WIFI) | WiFi + NTP — connects to a network, syncs time from an NTP server, and renders a live clock on an SPI TFT display | TFT CS `5`, DC `2`, RST `4` | `Adafruit ILI9341`, `Adafruit GFX Library` |
 
-More demos will be added as I go (I2C sensors, interrupts, timers, BLE, etc.).
+More demos will be added as I go (timers, BLE, etc.).
 
 ## Running a project
 
@@ -65,6 +70,16 @@ repo-root/
 │   └── ...
 ├── 7seg4dig/
 │   └── ...
+├── I2CInput/
+│   └── ...
+├── I2Cdisplay/
+│   └── ...
+├── TwoTaskComm/
+│   └── ...
+├── HardwareInturrupt/
+│   └── ...
+├── WIFI/
+│   └── ...
 └── README.md
 ```
 
@@ -76,6 +91,11 @@ repo-root/
 - **PMW_LED** — Combines ADC read + `map()` + `analogWrite()` to drive LED brightness proportionally to the potentiometer position; also logs both raw and mapped values to Serial.
 - **TFTdisplay** — Initializes the ILI9341 over SPI, clears the screen, and prints sample text in multiple colors/sizes. `loop()` is intentionally empty (static display).
 - **7seg4dig** — Runs the display refresh on a dedicated FreeRTOS task (pinned to core 1) so `sevseg.refreshDisplay()` gets called continuously regardless of what `loop()` is doing; `loop()` just parses integers from Serial and updates a `volatile` shared value. Set `hardwareConfig` in the code to match your display (common anode vs. common cathode).
+- **I2CInput** — Reads temperature, pressure (converted to hPa), and altitude from a BMP085 sensor once per second over I2C; halts in `setup()` if the sensor isn't detected.
+- **I2Cdisplay** — Counts from 0 to 10 on an I2C LCD: running count top-left, right-aligned countdown-to-10 on the bottom row, then shows "Resetting" before looping back to 0.
+- **TwoTaskComm** — Two FreeRTOS tasks pinned to core 1, communicating through a length-1 queue: `sensorTask` polls an HC-SR04 ultrasonic sensor and a PIR motion sensor and pushes each reading with `xQueueOverwrite` (so only the latest reading matters); `displayTask` blocks on `xQueueReceive` and renders distance + motion state to the I2C LCD.
+- **HardwareInturrupt** — Builds on `TwoTaskComm` by replacing the polled PIR read with a real hardware interrupt: `attachInterrupt` fires an `IRAM_ATTR` ISR on the motion pin's rising edge, which just sets a `volatile` flag; the sensor task consumes and resets that flag each cycle alongside the polled ultrasonic reading, then pushes both to the display task via a length-1 queue.
+- **WIFI** — Connects to WiFi (`Wokwi-GUEST`), syncs the clock via `configTime`/NTP, then prints a continuously updating `HH:MM:SS` clock to an SPI-driven ILI9341 TFT, redrawing only the time region each second (via `fillRect`) to avoid full-screen flicker.
 
 ## Notes
 
