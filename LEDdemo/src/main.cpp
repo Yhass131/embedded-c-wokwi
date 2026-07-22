@@ -11,7 +11,6 @@
  * WIRING (GPIO -> Component):
  *  - LED:  5
  *  - ButtonInput:  17
- *  - TFT_RST (Reset, optional):  4
  *
  * LIBRARIES:
  *
